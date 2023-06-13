@@ -20,7 +20,7 @@ export const cartSlice = createSlice({
         return item;
       });
       // if new item
-      !isExists && data.push(action.payload);
+      !isExists && data.push({ ...action.payload, isCheck: false });
     },
     updateCart: (state, action) => {
       const data = state.data;
@@ -34,13 +34,21 @@ export const cartSlice = createSlice({
     deleteCart: (state, action) => {
       state.data = state.data.filter((item) => item._id !== action.payload);
     },
+    selectItemCart: (state, action) => {
+      state.data.map((item) => {
+        if (item._id === action.payload) {
+          item.isCheck = !item.isCheck;
+        }
+        return item;
+      });
+    },
     clearCart: (state, action) => {
       state.data = [];
     },
   },
 });
 
-export const { addToCart, updateCart, deleteCart, clearCart } =
+export const { addToCart, updateCart, deleteCart, clearCart, selectItemCart } =
   cartSlice.actions;
 
 export default cartSlice.reducer;

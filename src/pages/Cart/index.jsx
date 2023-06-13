@@ -5,6 +5,7 @@ import {
   updateCart,
   deleteCart,
   clearCart,
+  selectItemCart,
 } from "../../redux/features/cartSlice";
 import { useNavigate } from "react-router-dom";
 import { postOrder } from "../../service/api";
@@ -63,6 +64,13 @@ const Cart = () => {
           {cart.map((item) => (
             <div className="cart-item row" key={item._id}>
               <div className="cart-thumb col-lg-7 col-md-7 col-sm-12">
+                <input
+                  type="checkbox"
+                  name="selected"
+                  id="selected"
+                  onChange={() => dispatch(selectItemCart(item._id))}
+                  checked={item.isCheck}
+                />
                 <img src={getImageProduct(item.image)} alt="" />
                 <h4>{item.name}</h4>
               </div>
@@ -95,7 +103,12 @@ const Cart = () => {
             <div className="cart-price col-lg-3 col-md-3 col-sm-12">
               <b>
                 {formatter.format(
-                  cart.reduce((total, item) => total + item.price * item.qty, 0)
+                  cart.reduce((total, item) => {
+                    if (item.isCheck) {
+                      return total + item.price * item.qty;
+                    }
+                    return total;
+                  }, 0)
                 )}
               </b>
             </div>
