@@ -27,3 +27,7 @@ export const getCategory = (id, config) => {
 export const getProductCategory = (id, config) => {
   return Http.get(`/categories/${id}/products`, config);
 };
+
+export const postOrder = (data, config) => {
+  return Http.post(`/order`, data, config);
+};

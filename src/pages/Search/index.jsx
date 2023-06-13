@@ -28,7 +28,7 @@ const Search = () => {
       setSearchProduct(data.data.docs);
       setPages({ ...pages, ...data.data.pages });
     });
-  }, [keyword, page]);
+  }, [keyword, page, pages]);
 
   console.log(pages);
 

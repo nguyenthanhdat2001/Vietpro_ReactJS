@@ -1,20 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { formatter, getImageProduct } from "../../util";
 import { updateCart, deleteCart } from "../../redux/features/cartSlice";
+import { useNavigate } from "react-router-dom";
+import { postOrder } from "../../service/api";
 
 const Cart = () => {
   const cart = useSelector(({ cart }) => cart.data);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [data, setData] = useState({});
+  const handleInput = (e) => {
+    const { name, value } = e.target;
+    setData({ ...data, [name]: value });
+  };
+
+  const order = (e) => {
+    e.preventDefault();
+    const items = cart.map((item) => {
+      return {
+        prd_id: item._id,
+        qty: item.qty,
+      };
+    });
+    postOrder({ ...data, items }).then(({ data }) => {
+      if(data.status === 'success'){
+        navigate('/success')
+      }
+    });
+  };
+
   const handleUpdateCart = (e, id) => {
     let val = parseInt(e.target.value);
     if (val <= 0) {
       // eslint-disable-next-line no-restricted-globals
       const del = confirm("Delele ?");
-      return del
-        ? dispatch(deleteCart(id))
-        // : dispatch(updateCart({ _id: id, qty: 1 }));
-        : val = 1
+      return del ? dispatch(deleteCart(id)) : (val = 1);
     }
     dispatch(updateCart({ _id: id, qty: val }));
   };
@@ -85,6 +107,8 @@ const Cart = () => {
                   type="text"
                   name="name"
                   className="form-control"
+                  onChange={handleInput}
+                  value={data?.name || ""}
                   required
                 />
               </div>
@@ -94,6 +118,8 @@ const Cart = () => {
                   type="text"
                   name="phone"
                   className="form-control"
+                  onChange={handleInput}
+                  value={data?.phone || ""}
                   required
                 />
               </div>
@@ -101,8 +127,10 @@ const Cart = () => {
                 <input
                   placeholder="Email (bắt buộc)"
                   type="text"
-                  name="mail"
+                  name="email"
                   className="form-control"
+                  onChange={handleInput}
+                  value={data?.email || ""}
                   required
                 />
               </div>
@@ -110,8 +138,10 @@ const Cart = () => {
                 <input
                   placeholder="Địa chỉ nhà riêng hoặc cơ quan (bắt buộc)"
                   type="text"
-                  name="add"
+                  name="address"
                   className="form-control"
+                  onChange={handleInput}
+                  value={data?.address || ""}
                   required
                 />
               </div>
@@ -119,7 +149,7 @@ const Cart = () => {
           </form>
           <div className="row">
             <div className="by-now col-lg-6 col-md-6 col-sm-12">
-              <a href="#">
+              <a href="#" onClick={order}>
                 <b>Mua ngay</b>
                 <span>Giao hàng tận nơi siêu tốc</span>
               </a>

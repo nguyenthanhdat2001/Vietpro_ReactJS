@@ -19,7 +19,6 @@ const ProductDetail = () => {
   const cart = useSelector((state) => state.cart.data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log(cart);
 
   const getComment = (id) => {
     getProductComment(id, {}).then(({ data }) => setComments(data.data.docs));
