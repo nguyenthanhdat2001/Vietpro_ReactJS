@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { formatter, getImageProduct } from "../../util";
-import { updateCart, deleteCart } from "../../redux/features/cartSlice";
+import {
+  updateCart,
+  deleteCart,
+  clearCart,
+} from "../../redux/features/cartSlice";
 import { useNavigate } from "react-router-dom";
 import { postOrder } from "../../service/api";
 
@@ -25,8 +29,9 @@ const Cart = () => {
       };
     });
     postOrder({ ...data, items }).then(({ data }) => {
-      if(data.status === 'success'){
-        navigate('/success')
+      if (data.status === "success") {
+        dispatch(clearCart());
+        navigate("/success");
       }
     });
   };
